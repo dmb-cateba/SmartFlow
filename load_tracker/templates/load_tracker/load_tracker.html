@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+<h1 class="mt-4">Loads Summary</h1>
+  
+  <!-- Landing Page Summary Charts (displayed as cards) -->
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card">
+         <div class="card-body">
+            <h5 class="card-title">Loads In Transit</h5>
+            <p class="card-text">{{ summary.loads_in_transit }}</p>
+         </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+         <div class="card-body">
+            <h5 class="card-title">Loads Completed</h5>
+            <p class="card-text">{{ summary.loads_completed }}</p>
+         </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+         <div class="card-body">
+            <h5 class="card-title">Status Breakdown</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Departed Warehouse: {{ summary.status_breakdown.departed_warehouse }}</li>
+              <li class="list-group-item">Arrived First Facility: {{ summary.status_breakdown.arrived_first_facility }}</li>
+              <li class="list-group-item">In Transit Next Facility: {{ summary.status_breakdown.in_transit_next_facility }}</li>
+              <li class="list-group-item">Completed: {{ summary.status_breakdown.completed }}</li>
+            </ul>
+         </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Detailed Load Tracker Table -->
+  <h3>Load Details</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Load/Voyage Number</th>
+        <th>Lane (From)</th>
+        <th>Lane (To)</th>
+        <th>Load Type</th>
+        <th>First Facility ETA</th>
+        <th>First Facility Arrival</th>
+        <th>First Facility Departure</th>
+        <th>Next Facility ETA</th>
+        <th>Next Facility Arrival</th>
+        <th>Next Facility Departure</th>
+        <th>Final Destination Arrival</th>
+        <th>Customers/Suppliers</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for load in loads %}
+      <tr>
+        <td>{{ load.load_voyage_number }}</td>
+        <td>{{ load.lane_from }}</td>
+        <td>{{ load.lane_to }}</td>
+        <td>{{ load.load_type }}</td>
+        <td>{{ load.first_facility_eta }}</td>
+        <td>{{ load.first_facility_arrival_status }}</td>
+        <td>{{ load.first_facility_departure_status }}</td>
+        <td>{{ load.next_facility_eta }}</td>
+        <td>{{ load.next_facility_arrival_status }}</td>
+        <td>{{ load.next_facility_departure_status }}</td>
+        <td>{{ load.final_destination_arrival_status }}</td>
+        <td>{{ load.customers_suppliers }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="12">No load details available.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
