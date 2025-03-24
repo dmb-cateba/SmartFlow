@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Inventory Management</h1>
+    <!-- Optionally, add a search or filter form here for SKU, bin number, etc. -->
+    <h2>Inventory Items</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>WHS_ESKU</th>
+                <th>VENDORSKU</th>
+                <th>Description</th>
+                <th>Bin Number</th>
+                <th>Expiration Date</th>
+                <th>Reception Date</th>
+                <th>Supplier</th>
+                <th>Last Movement By</th>
+                <th>Last Movement On</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory_items %}
+            <tr>
+                <td>{{ item.whs_esku }}</td>
+                <td>{{ item.vendor_sku }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.bin_number }}</td>
+                <td>{{ item.expiration_date }}</td>
+                <td>{{ item.reception_date }}</td>
+                <td>{{ item.supplier }}</td>
+                <td>{{ item.last_movement_by }}</td>
+                <td>{{ item.last_movement_on }}</td>
+                <td>{{ item.quantity }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10">No inventory items available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
