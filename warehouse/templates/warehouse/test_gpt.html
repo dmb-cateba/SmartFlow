@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartStock</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    body { 
+      padding: 20px; 
+      background-color: #f8f9fa; 
+    }
+    .hidden { display: none; }
+    .scan-feedback { font-size: 1.2rem; margin-top: 10px; }
+    .menu-card:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-5px);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .menu-card { cursor: pointer; }
+    /* Colored circle icons */
+    .icon-circle {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 50%;
+      text-align: center;
+      color: white;
+      margin-right: 15px;
+    }
+    .icon-blue { background-color: #007bff; }
+    .icon-green { background-color: #28a745; }
+    .icon-red { background-color: #dc3545; }
+    .icon-orange { background-color: #fd7e14; }
+    .icon-purple { background-color: #6f42c1; }
+    .icon-teal { background-color: #20c997; }
+    /* Header row styling */
+    .header-row {
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+    .header-blue { background-color: #007bff; }
+    .header-green { background-color: #28a745; }
+    .header-red { background-color: #dc3545; }
+    .header-orange { background-color: #fd7e14; }
+    .header-purple { background-color: #6f42c1; }
+    .header-teal { background-color: #20c997; }
+    /* User badge placed at top right inside header */
+    .user-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.9rem;
+    }
+    /* Fixed footer styling */
+    .fixed-footer {
+      font-size: 10px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    /* Home button container */
+    .home-container {
+      text-align: center;
+      margin-top: 15px;
+    }
+    /* Instruction and confirmation styles */
+    .instructionMessage {
+      color: orange;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .confirmationMessage {
+      color: green;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="header-row header-blue">
+      <h1>SmartStock</h1>
+    </div>
+    <h2 class="text-center mb-3">Welcome to SmartStock</h2>
+    <div class="mb-3">
+      <input type="text" id="username" class="form-control" placeholder="Username" />
+    </div>
+    <div class="mb-3">
+      <input type="password" id="password" class="form-control" placeholder="Password" />
+    </div>
+    <button class="btn btn-primary" onclick="login()">Login</button>
+    <div id="loginFeedback" class="text-danger mt-2"></div>
+    <div class="fixed-footer mt-3">2025 SmartStock by DMB All rights reserved</div>
+  </div>
+
+  <!-- Main Menu Screen -->
+  <div id="mainMenu" class="hidden">
+    <div class="header-row header-blue">
+      <h1>SmartStock</h1>
+      <span id="loggedInUserMain" class="user-badge badge bg-secondary" style="background-color: transparent; border: none;"></span>
+    </div>
+    <div class="row gy-3">
+      <!-- 01. Receive -->
+      <div class="col-12 col-md-4">
+        <div class="card menu-card" onclick="showSubMenu('Receive')">
+          <div class="card-body">
+            <span class="icon-circle icon-blue"><i class="fas fa-box-open"></i></span>
+            <strong>01. Receive</strong>
+          </div>
+        </div>
+      </div>
+      <!-- 02. Prepare Order -->
+      <div class="col-12 col-md-4">
+        <div class="card menu-card" onclick="showSubMenu('Prepare Order')">
+          <div class="card-body">
+            <span class="icon-circle icon-green"><i class="fas fa-clipboard-check"></i></span>
+            <strong>02. Prepare Order</strong>
+          </div>
+        </div>
+      </div>
+      <!-- 03. Ship -->
+      <div class="col-12 col-md-4">
+        <div class="card menu-card" onclick="showSubMenu('Ship')">
+          <div class="card-body">
+            <span class="icon-circle icon-red"><i class="fas fa-truck"></i></span>
+            <strong>03. Ship</strong>
+          </div>
+        </div>
+      </div>
+      <!-- 04. Inventory Control -->
+      <div class="col-12 col-md-4">
+        <div class="card menu-card" onclick="showSubMenu('Inventory Control')">
+          <div class="card-body">
+            <span class="icon-circle icon-orange"><i class="fas fa-warehouse"></i></span>
+            <strong>04. Inventory Control</strong>
+          </div>
+        </div>
+      </div>
+      <!-- 05. Problem Solving -->
+      <div class="col-12 col-md-4">
+        <div class="card menu-card" onclick="showSubMenu('Problem Solving')">
+          <div class="card-body">
+            <span class="icon-circle icon-purple"><i class="fas fa-tools"></i></span>
+            <strong>05. Problem Solving</strong>
+          </div>
+        </div>
+      </div>
+      <!-- 06. Configurations -->
+      <div class="col-12 col-md-4">
+        <div class="card menu-card" onclick="showSubMenu('Configurations')">
+          <div class="card-body">
+            <span class="icon-circle icon-teal"><i class="fas fa-cogs"></i></span>
+            <strong>06. Configurations</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="home-container">
+      <button class="btn btn-primary" onclick="showMainMenu()">Home</button>
+    </div>
+    <div class="fixed-footer">2025 SmartStock by DMB All rights reserved</div>
+  </div>
+
+  <!-- Sub-Menu Screen -->
+  <div id="subMenuScreen" class="hidden">
+    <div id="subMenuHeader" class="header-row header-blue">
+      <h2 id="subMenuTitle" class="m-0"></h2>
+      <span id="loggedInUserSub" class="user-badge badge bg-secondary"></span>
+    </div>
+    <button class="btn btn-secondary mb-3" onclick="goBackSubMenu()">Back</button>
+    <div id="subMenuContent" class="row gy-3"></div>
+    <div class="home-container">
+      <button class="btn btn-primary" onclick="showMainMenu()">Home</button>
+    </div>
+    <div class="fixed-footer">2025 SmartStock by DMB All rights reserved</div>
+  </div>
+
+  <!-- Workflow Detail Screen -->
+  <div id="workflowScreen" class="hidden">
+    <div id="workflowHeader" class="header-row header-blue">
+      <h2 id="workflowTitle" class="m-0"></h2>
+      <span id="loggedInUserWorkflow" class="user-badge badge bg-secondary"></span>
+    </div>
+    <button class="btn btn-secondary mb-3" onclick="returnToSubMenu()">Back</button>
+    <div id="workflowContent"></div>
+    <!-- Action Area for additional buttons/inputs -->
+    <div id="actionArea"></div>
+    <!-- A list of moved items -->
+    <div id="itemsList"></div>
+    <!-- Always-active scanner input -->
+    <input type="text" id="scannerInput" class="form-control mt-3" placeholder="Scan input here..." autofocus />
+    <div id="scanFeedback" class="scan-feedback"></div>
+    <div class="home-container">
+      <button class="btn btn-primary" onclick="showMainMenu()">Home</button>
+    </div>
+    <div class="fixed-footer">2025 SmartStock by DMB All rights reserved</div>
+  </div>
+
+  <script>
+    let currentUser = '';
+    // currentWorkflow holds the state for the current transaction.
+    // For Receive flows (New Inventory, Returns, Cross-dock, Put in stock) it includes details such as steps, scanned values, etc.
+    let currentWorkflow = null;
+    let navigationStack = [];
+
+    // Update user badges on all screens.
+    function updateUserDisplay() {
+      const userBadge = document.getElementById('loggedInUserMain');
+      const userBadgeSub = document.getElementById('loggedInUserSub');
+      const userBadgeWorkflow = document.getElementById('loggedInUserWorkflow');
+      if (currentUser) {
+        userBadge.innerText = currentUser;
+        userBadgeSub.innerText = currentUser;
+        userBadgeWorkflow.innerText = currentUser;
+      }
+    }
+
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username && password) {
+        currentUser = username;
+        updateUserDisplay();
+        hideAll();
+        document.getElementById('mainMenu').classList.remove('hidden');
+      } else {
+        document.getElementById('loginFeedback').innerText = 'Invalid username or password!';
+      }
+    }
+
+    function hideAll() {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainMenu').classList.add('hidden');
+      document.getElementById('subMenuScreen').classList.add('hidden');
+      document.getElementById('workflowScreen').classList.add('hidden');
+      document.getElementById('scannerInput').value = '';
+      document.getElementById('scanFeedback').innerHTML = '';
+      document.getElementById('actionArea').innerHTML = '';
+      document.getElementById('itemsList').innerHTML = '';
+    }
+
+    function showMainMenu() {
+      navigationStack = [];
+      hideAll();
+      document.getElementById('mainMenu').classList.remove('hidden');
+    }
+
+    function showSubMenu(category) {
+      navigationStack = [{ type: 'menu', category: category }];
+      hideAll();
+      document.getElementById('subMenuScreen').classList.remove('hidden');
+      document.getElementById('subMenuTitle').innerText = category;
+      document.getElementById('subMenuHeader').className = "header-row header-blue";
+      document.getElementById('subMenuContent').innerHTML = getSubMenuContent(category);
+    }
+
+    function showNestedSubMenu(mainCategory, parentItem) {
+      navigationStack.push({ type: 'nested', mainCategory: mainCategory, parentItem: parentItem });
+      hideAll();
+      document.getElementById('subMenuScreen').classList.remove('hidden');
+      document.getElementById('subMenuTitle').innerText = mainCategory + " > " + parentItem;
+      document.getElementById('subMenuHeader').className = "header-row header-blue";
+      document.getElementById('subMenuContent').innerHTML = getNestedSubMenuContent(mainCategory, parentItem);
+    }
+
+    function goBackSubMenu() {
+      navigationStack.pop();
+      if (navigationStack.length === 0) {
+        showMainMenu();
+      } else {
+        const current = navigationStack[navigationStack.length - 1];
+        hideAll();
+        document.getElementById('subMenuScreen').classList.remove('hidden');
+        if (current.type === 'menu') {
+          document.getElementById('subMenuTitle').innerText = current.category;
+          document.getElementById('subMenuContent').innerHTML = getSubMenuContent(current.category);
+        } else if (current.type === 'nested') {
+          document.getElementById('subMenuTitle').innerText = current.mainCategory + " > " + current.parentItem;
+          document.getElementById('subMenuContent').innerHTML = getNestedSubMenuContent(current.mainCategory, current.parentItem);
+        }
+      }
+    }
+
+    function returnToSubMenu() {
+      hideAll();
+      document.getElementById('subMenuScreen').classList.remove('hidden');
+    }
+
+    // When a workflow item is selected, initialize currentWorkflow.
+    // For Receive flows, the same process is used for New Inventory, Returns and Cross-dock
+    // (with movement reasons adjusted) and for Put in stock a new workflow is set up.
+    function showWorkflowItem(mainCategory, item) {
+      hideAll();
+      document.getElementById('workflowScreen').classList.remove('hidden');
+      document.getElementById('workflowTitle').innerText = mainCategory + " - " + item;
+      document.getElementById('workflowContent').innerHTML = getWorkflowContent(mainCategory, item);
+      document.getElementById('scannerInput').focus();
+
+      if (mainCategory === 'Receive' && (item === 'New Inventory' || item === 'Returns' || item === 'Cross-dock')) {
+        let movementReason = "INBOUND_STAGING"; // default for New Inventory
+        if (item === 'Returns') {
+          movementReason = "RETURNS";
+        } else if (item === 'Cross-dock') {
+          movementReason = "CROSS_DOCK_UNLOADING";
+        }
+        currentWorkflow = {
+          category: 'Receive',
+          item: item,
+          step: 'dock_door', // Steps: dock_door, awaiting_destination, scanning_items
+          dockDoor: '',
+          sourceInfo: null,
+          referenceType: null,
+          referenceValue: null,
+          destination: null,
+          itemsMoved: [],
+          movementReason: movementReason
+        };
+        document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan Dock Door</div>`;
+      }
+      // Set up the Put in stock workflow with its two scenarios
+      else if (mainCategory === 'Receive' && item === 'Put in stock') {
+        currentWorkflow = {
+          category: 'Receive',
+          item: 'Put in stock',
+          step: 'select_mode', // next steps: select_mode, scan_item, scan_source, scan_destination, scanning_items
+          subType: null,       // will be set to 'single' or 'multiple'
+          product: null,
+          origin: null,
+          destination: null,
+          itemsMoved: []
+        };
+        document.getElementById('workflowContent').innerHTML = `<div>Please select mode for stowing:</div>`;
+        document.getElementById('actionArea').innerHTML = `
+          <button class="btn btn-primary m-1" onclick="selectPutInStockMode('single')">1.4.1 Single item</button>
+          <button class="btn btn-primary m-1" onclick="selectPutInStockMode('multiple')">1.4.2 Multiple items</button>
+        `;
+        document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan the item to stow</div>`;
+      }
+      else {
+        // For other workflows, simply initialize a basic workflow state.
+        currentWorkflow = { category: mainCategory, item: item, scanCount: 0, scannedData: [] };
+      }
+    }
+
+    function getSubMenuContent(category) {
+      let content = '';
+      if (category === 'Receive') {
+        content = 
+          `<div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Receive', 'New Inventory')">
+               <div class="card-body">
+                 <span class="icon-circle icon-blue"><i class="fas fa-file-alt"></i></span>
+                 1.1 New Inventory
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Receive', 'Returns')">
+               <div class="card-body">
+                 <span class="icon-circle icon-blue"><i class="fas fa-undo"></i></span>
+                 1.2 Returns
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Receive', 'Cross-dock')">
+               <div class="card-body">
+                 <span class="icon-circle icon-blue"><i class="fas fa-exchange-alt"></i></span>
+                 1.3 Cross-dock
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Receive', 'Put in stock')">
+               <div class="card-body">
+                 <span class="icon-circle icon-blue"><i class="fas fa-box-open"></i></span>
+                 1.4 Put in stock
+               </div>
+             </div>
+           </div>`;
+      } else if (category === 'Prepare Order') {
+        content = 
+          `<div class="col-12 col-md-6">
+             <div class="card menu-card" onclick="showWorkflowItem('Prepare Order', 'Pick an Order')">
+               <div class="card-body">
+                 <span class="icon-circle icon-green"><i class="fas fa-clipboard-check"></i></span>
+                 2.1 Pick an Order
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-6">
+             <div class="card menu-card" onclick="showWorkflowItem('Prepare Order', 'Pick with No Order')">
+               <div class="card-body">
+                 <span class="icon-circle icon-green"><i class="fas fa-question"></i></span>
+                 2.2 Pick with No Order
+               </div>
+             </div>
+           </div>`;
+      } else if (category === 'Ship') {
+        content = 
+          `<div class="col-12">
+             <div class="card menu-card" onclick="showWorkflowItem('Ship', 'Ship Items')">
+               <div class="card-body">
+                 <span class="icon-circle icon-red"><i class="fas fa-truck"></i></span>
+                 3. Ship Items
+               </div>
+             </div>
+           </div>`;
+      } else if (category === 'Inventory Control') {
+        content = 
+          `<div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showNestedSubMenu('Inventory Control', 'Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-sort-numeric-up"></i></span>
+                 4.1 Count
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Put Back')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-plus-circle"></i></span>
+                 4.2 Put Back (Add items)
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Put Away')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-trash-alt"></i></span>
+                 4.3 Put Away (Delete items)
+               </div>
+             </div>
+           </div>`;
+      } else if (category === 'Problem Solving') {
+        content = 
+          `<div class="col-12">
+             <div class="card menu-card" onclick="showWorkflowItem('Problem Solving', 'Issue Resolution')">
+               <div class="card-body">
+                 <span class="icon-circle icon-purple"><i class="fas fa-tools"></i></span>
+                 5. Problem Solving
+               </div>
+             </div>
+           </div>`;
+      } else if (category === 'Configurations') {
+        content = 
+          `<div class="col-12 col-md-6">
+             <div class="card menu-card" onclick="showNestedSubMenu('Configurations', 'Locations')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-map-marker-alt"></i></span>
+                 6.1 Locations
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-6">
+             <div class="card menu-card" onclick="showNestedSubMenu('Configurations', 'Containers')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-boxes"></i></span>
+                 6.2 Containers
+               </div>
+             </div>
+           </div>`;
+      }
+      return content;
+    }
+
+    function getNestedSubMenuContent(mainCategory, parentItem) {
+      let content = '';
+      if (mainCategory === 'Inventory Control' && parentItem === 'Count') {
+        content = 
+          `<div class="col-12 col-md-3">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Simple Bin Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-th-list"></i></span>
+                 4.1.1 Simple Bin Count
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-3">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Simple Record Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-clipboard"></i></span>
+                 4.1.2 Simple Record Count
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-3">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Cycle Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-sync-alt"></i></span>
+                 4.1.3 Cycle Count
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-3">
+             <div class="card menu-card" onclick="showNestedSubMenu('Inventory Control', 'Periodic Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-calendar-alt"></i></span>
+                 4.1.4 Periodic Count
+               </div>
+             </div>
+           </div>`;
+      } else if (mainCategory === 'Inventory Control' && parentItem === 'Periodic Count') {
+        content = 
+          `<div class="col-12 col-md-6">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Monthly Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-calendar-day"></i></span>
+                 4.1.4.1 Monthly
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-6">
+             <div class="card menu-card" onclick="showWorkflowItem('Inventory Control', 'Yearly Count')">
+               <div class="card-body">
+                 <span class="icon-circle icon-orange"><i class="fas fa-calendar"></i></span>
+                 4.1.4.2 Yearly
+               </div>
+             </div>
+           </div>`;
+      } else if (mainCategory === 'Configurations' && parentItem === 'Locations') {
+        content = 
+          `<div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Configurations', 'Create Location')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-plus"></i></span>
+                 6.1.1 Create Location
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Configurations', 'Edit Location')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-edit"></i></span>
+                 6.1.2 Edit Location
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Configurations', 'Delete Location')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-trash"></i></span>
+                 6.1.3 Delete Location
+               </div>
+             </div>
+           </div>`;
+      } else if (mainCategory === 'Configurations' && parentItem === 'Containers') {
+        content = 
+          `<div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Configurations', 'Create Container')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-plus-square"></i></span>
+                 6.2.1 Create Container
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Configurations', 'Edit Container')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-edit"></i></span>
+                 6.2.2 Edit Container
+               </div>
+             </div>
+           </div>
+           <div class="col-12 col-md-4">
+             <div class="card menu-card" onclick="showWorkflowItem('Configurations', 'Delete Container')">
+               <div class="card-body">
+                 <span class="icon-circle icon-teal"><i class="fas fa-trash-alt"></i></span>
+                 6.2.3 Delete Container
+               </div>
+             </div>
+           </div>`;
+      }
+      return content;
+    }
+
+    function getWorkflowContent(category, item) {
+      let instructions = `<ol>`;
+      if (category === 'Receive' && (item === 'New Inventory' || item === 'Returns' || item === 'Cross-dock')) {
+        instructions += 
+          `<li>Scan/Enter PO Number – Validate and display PO details.</li>
+           <li><span class="instructionMessage">Scan Dock Door</span> – Confirm dock door.</li>
+           <li><span class="instructionMessage">Scan Item</span> – Validate and display item details/quantity.</li>
+           <li><span class="instructionMessage">Scan Inbound Staging Location</span> – Update inventory and confirm.</li>`;
+      } else if (category === 'Receive' && item === 'Put in stock') {
+        // Minimal instructions as the Put in stock workflow uses mode selection and dynamic instructions.
+        instructions += `<li>Select mode (Single or Multiple items) and follow the prompts.</li>`;
+      } else if (category === 'Prepare Order' && item === 'Pick an Order') {
+        instructions += 
+          `<li>Select an order – Display order details and status.</li>
+           <li>If order is cancelled, scan pallet then waiting location.</li>
+           <li>If order is ongoing, proceed to palletization area.</li>
+           <li>Confirm order picking and print label.</li>`;
+      } else if (category === 'Prepare Order' && item === 'Pick with No Order') {
+        instructions += 
+          `<li>Create a temporary order ID.</li>
+           <li>Scan pallet location, choose container type, and scan items from origin to destination.</li>
+           <li>Confirm picking complete and print label.</li>`;
+      } else if (category === 'Ship' && item === 'Ship Items') {
+        instructions += 
+          `<li>Scan Load ID – Aggregate load details.</li>
+           <li>Press "Start Loading" when trailer/truck is at dock door.</li>
+           <li>Scan Pallet/Case/Box/Container/Item then scan Dock Door – Validate and bind items.</li>
+           <li>If a wrong dock door is scanned, show error and alert.</li>
+           <li>Mark load complete and transmit manifest to ERP.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Simple Bin Count') {
+        instructions += 
+          `<li>Scan Bin – Validate and display details.</li>
+           <li>Enter count quantity – Update and confirm.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Simple Record Count') {
+        instructions += 
+          `<li>Scan Bin – Validate details.</li>
+           <li>Scan each item – Record scans and confirm.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Cycle Count') {
+        instructions += 
+          `<li>Scan Bin – Validate details.</li>
+           <li>Scan all items – Compare against system values.</li>
+           <li>Press "Count Complete" to finish.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Monthly Count') {
+        instructions += 
+          `<li>Scan Bin – Validate details.</li>
+           <li>Scan all items – Update monthly count and confirm.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Yearly Count') {
+        instructions += 
+          `<li>Scan Bin – Validate details.</li>
+           <li>Scan all items – Update yearly count and confirm.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Put Back') {
+        instructions += 
+          `<li>Scan Parking Location – Validate details.</li>
+           <li>Scan Destination Location – Update inventory and confirm.</li>`;
+      } else if (category === 'Inventory Control' && item === 'Put Away') {
+        instructions += 
+          `<li>Scan Item/Container – Validate and display details.</li>
+           <li>Scan Inbound Area – Mark items for deletion and confirm.</li>`;
+      } else if (category === 'Problem Solving' && item === 'Issue Resolution') {
+        instructions += 
+          `<li>Scan Problem ID or Item – Display issue details.</li>
+           <li>Follow on-screen prompts to resolve the issue.</li>`;
+      } else if (category === 'Configurations' && item === 'Create Location') {
+        instructions += 
+          `<li>Enter new location details.</li>
+           <li>Confirm location creation and verify in the system.</li>`;
+      } else if (category === 'Configurations' && item === 'Edit Location') {
+        instructions += 
+          `<li>Scan/Enter location ID to edit.</li>
+           <li>Modify details as needed and confirm changes.</li>`;
+      } else if (category === 'Configurations' && item === 'Delete Location') {
+        instructions += 
+          `<li>Scan/Enter location ID to delete.</li>
+           <li>Confirm deletion and verify removal from the system.</li>`;
+      } else if (category === 'Configurations' && item === 'Create Container') {
+        instructions += 
+          `<li>Enter new container details.</li>
+           <li>Confirm container creation and verify in the system.</li>`;
+      } else if (category === 'Configurations' && item === 'Edit Container') {
+        instructions += 
+          `<li>Scan/Enter container ID to edit.</li>
+           <li>Modify details as needed and confirm changes.</li>`;
+      } else if (category === 'Configurations' && item === 'Delete Container') {
+        instructions += 
+          `<li>Scan/Enter container ID to delete.</li>
+           <li>Confirm deletion and verify removal from the system.</li>`;
+      }
+      instructions += `</ol><p>Note: The scan input field below is always active for immediate processing.</p>`;
+      return instructions;
+    }
+
+    // Main processScan – delegates to specialized functions when needed.
+    function processScan(scannedValue) {
+      // Check if we are in a Put in stock workflow.
+      if (currentWorkflow && currentWorkflow.category === 'Receive' && currentWorkflow.item === 'Put in stock') {
+         processScanPutInStock(scannedValue);
+         return;
+      }
+      // For Receive flows (New Inventory, Returns, Cross-dock)
+      if (currentWorkflow && currentWorkflow.category === 'Receive' &&
+         (currentWorkflow.item === 'New Inventory' || currentWorkflow.item === 'Returns' || currentWorkflow.item === 'Cross-dock')) {
+         
+        if (currentWorkflow.step === "dock_door") {
+          currentWorkflow.dockDoor = scannedValue;
+          fetch('/warehouse/location_detail/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ barcode: scannedValue })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (!data || Object.keys(data).length === 0) {
+              currentWorkflow.step = "awaiting_reference_choice";
+              renderReferenceChoice();
+            } else {
+              currentWorkflow.sourceInfo = data;
+              currentWorkflow.step = "awaiting_destination";
+              document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan destination</div>`;
+            }
+          })
+          .catch(error => {
+            document.getElementById('scanFeedback').innerHTML = "<div style='color:red; font-weight:bold;'>Error verifying dock door</div>";
+          });
+        }
+        else if (currentWorkflow.step === "awaiting_destination") {
+          fetch('/warehouse/location_detail/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ barcode: scannedValue })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (!data || Object.keys(data).length === 0) {
+              document.getElementById('scanFeedback').innerHTML = "<div style='color:red; font-weight:bold;'>Invalid destination. Please scan correct destination.</div>";
+            } else {
+              currentWorkflow.destination = { id: data.location_id, name: data.location_type || scannedValue };
+              currentWorkflow.step = "scanning_items";
+              document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan items to move</div>`;
+              document.getElementById('actionArea').innerHTML = '<button class="btn btn-success mt-2" onclick="completeMovement()">Done</button>';
+            }
+          })
+          .catch(error => {
+            document.getElementById('scanFeedback').innerHTML = "<div style='color:red; font-weight:bold;'>Error validating destination</div>";
+          });
+        }
+        else if (currentWorkflow.step === "scanning_items") {
+          let itemRecord = { itemMovedId: scannedValue, eventTime: new Date().toISOString() };
+          currentWorkflow.itemsMoved.push(itemRecord);
+          let itemsList = document.getElementById('itemsList');
+          let newItemMsg = document.createElement('div');
+          newItemMsg.className = 'confirmationMessage';
+          newItemMsg.innerText = scannedValue + " moved to " + currentWorkflow.destination.name;
+          itemsList.appendChild(newItemMsg);
+          document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan next item or press Done</div>`;
+        }
+      } else {
+        // For other workflows simply echo the scan.
+        document.getElementById('scanFeedback').innerHTML = "<div class='confirmationMessage'>Scanned: " + scannedValue + "</div>";
+      }
+    }
+
+    // ---------------- Put in stock workflow functions ---------------- //
+
+    // Mode selection for Put in stock
+    function selectPutInStockMode(mode) {
+      currentWorkflow.subType = mode;
+      currentWorkflow.step = 'scan_item';
+      document.getElementById('actionArea').innerHTML = '';
+      document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan the item to stow</div>`;
+    }
+
+    // Process scans in the Put in stock workflow.
+    function processScanPutInStock(scannedValue) {
+      if (currentWorkflow.step === 'scan_item') {
+         // Verify item existence.
+         fetch('/warehouse/product_exists/', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-CSRFToken': getCookie('csrftoken')
+             },
+             body: JSON.stringify({ item_id: scannedValue })
+         })
+         .then(response => response.json())
+         .then(data => {
+             if(data.exists) {
+                currentWorkflow.product = scannedValue;
+                currentWorkflow.step = 'scan_source';
+                document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan the source location</div>`;
+                document.getElementById('actionArea').innerHTML = `<button class="btn btn-secondary" onclick="setSourceUnknown()">Source location unknown</button>`;
+             } else {
+                document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">Item does not exist. Try again.</div>`;
+             }
+         })
+         .catch(error => {
+             document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">Error verifying item</div>`;
+         });
+      } else if (currentWorkflow.step === 'scan_source') {
+         // Validate source location.
+         fetch('/warehouse/location_detail/', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-CSRFToken': getCookie('csrftoken')
+             },
+             body: JSON.stringify({ barcode: scannedValue })
+         })
+         .then(response => response.json())
+         .then(data => {
+             if(data && Object.keys(data).length > 0) {
+                 currentWorkflow.origin = scannedValue;
+                 currentWorkflow.step = 'scan_destination';
+                 document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan the destination bin</div>`;
+                 document.getElementById('actionArea').innerHTML = '';
+             } else {
+                 document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">Invalid source location. Try again or select unknown.</div>`;
+             }
+         })
+         .catch(error => {
+             document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">Error verifying source location</div>`;
+         });
+      } else if (currentWorkflow.step === 'scan_destination') {
+         // Validate destination bin – must start with "BIN".
+         fetch('/warehouse/location_detail/', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-CSRFToken': getCookie('csrftoken')
+             },
+             body: JSON.stringify({ barcode: scannedValue })
+         })
+         .then(response => response.json())
+         .then(data => {
+             if(data && data.success && scannedValue.startsWith("BIN")) {
+                 currentWorkflow.destination = scannedValue;
+                 if(currentWorkflow.subType === 'single') {
+                     // Immediately record movement for single item.
+                     recordPutInStockMovement([{
+                         item_barcode: currentWorkflow.product,
+                         eventTime: new Date().toISOString()
+                     }]);
+                 } else if(currentWorkflow.subType === 'multiple') {
+                     currentWorkflow.step = 'scanning_items';
+                     document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan items to move</div>`;
+                     document.getElementById('actionArea').innerHTML = `<button class="btn btn-success mt-2" onclick="completePutInStockMovement()">Done</button>`;
+                 }
+             } else {
+                 document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">BIN does not exist. Try another code.</div>`;
+             }
+         })
+         .catch(error => {
+             document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">Error verifying destination bin</div>`;
+         });
+      } else if (currentWorkflow.step === 'scanning_items') {
+         // For multiple items, each scan is recorded.
+         let itemRecord = { item_barcode: scannedValue, eventTime: new Date().toISOString() };
+         currentWorkflow.itemsMoved.push(itemRecord);
+         let itemsList = document.getElementById('itemsList');
+         let newItemMsg = document.createElement('div');
+         newItemMsg.className = 'confirmationMessage';
+         newItemMsg.innerText = scannedValue + " moved to " + currentWorkflow.destination;
+         itemsList.appendChild(newItemMsg);
+         document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan next item or press Done</div>`;
+      }
+    }
+
+    // Called when the "Source location unknown" button is pressed.
+    function setSourceUnknown() {
+      currentWorkflow.origin = "DROPZONE_UNKNOWN";
+      currentWorkflow.step = 'scan_destination';
+      document.getElementById('actionArea').innerHTML = '';
+      document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan the destination bin</div>`;
+    }
+
+    // Records the Put in stock movement.
+    function recordPutInStockMovement(movementsArray) {
+      let payload = {
+         from_location: currentWorkflow.origin || "",
+         to_location: currentWorkflow.destination,
+         movement_reason: "INVENTORY_MOVEMENT",
+         movements: movementsArray
+      };
+      fetch('/warehouse/record_movement/', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+         body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+         document.getElementById('scanFeedback').innerHTML = `<div class="confirmationMessage">${currentWorkflow.product || "Item(s)"} moved to ${currentWorkflow.destination}</div>`;
+         resetPutInStockWorkflow();
+      })
+      .catch(error => {
+         document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">Error completing movement</div>`;
+      });
+    }
+
+    // For multiple items, complete the movement when Done is pressed.
+    function completePutInStockMovement() {
+      if(currentWorkflow.itemsMoved.length === 0) {
+         document.getElementById('scanFeedback').innerHTML = `<div style="color:red; font-weight:bold;">No items moved.</div>`;
+         return;
+      }
+      recordPutInStockMovement(currentWorkflow.itemsMoved);
+    }
+
+    // Reset Put in stock workflow to initial state.
+    function resetPutInStockWorkflow() {
+      currentWorkflow.step = 'scan_item';
+      currentWorkflow.product = null;
+      currentWorkflow.origin = null;
+      currentWorkflow.destination = null;
+      currentWorkflow.itemsMoved = [];
+      document.getElementById('actionArea').innerHTML = '';
+      document.getElementById('itemsList').innerHTML = '';
+      document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan the item to stow</div>`;
+    }
+
+    // When Done is pressed in Receive flows.
+    function completeMovement() {
+      if (currentWorkflow.itemsMoved.length === 0) {
+        document.getElementById('scanFeedback').innerHTML = "<div style='color:red; font-weight:bold;'>No items moved.</div>";
+        return;
+      }
+      let payload = {
+        from_location: currentWorkflow.dockDoor || (currentWorkflow.sourceInfo && currentWorkflow.sourceInfo.referenceValue) || "",
+        to_location: currentWorkflow.destination.id,
+        movement_reason: currentWorkflow.movementReason,
+        movements: currentWorkflow.itemsMoved.map(item => ({
+          item_barcode: item.itemMovedId,
+          eventTime: item.eventTime
+        }))
+      };
+
+      fetch('/warehouse/record_movement/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('scanFeedback').innerHTML = "<div class='confirmationMessage'>Movement recorded successfully</div>";
+        resetNewInventoryWorkflow();
+      })
+      .catch(error => {
+        document.getElementById('scanFeedback').innerHTML = "<div style='color:red; font-weight:bold;'>Error completing movement</div>";
+      });
+    }
+
+    // Reset Receive (New Inventory / Returns / Cross-dock) workflow.
+    function resetNewInventoryWorkflow() {
+      currentWorkflow = {
+        category: 'Receive',
+        item: currentWorkflow.item,
+        step: 'dock_door',
+        dockDoor: '',
+        sourceInfo: null,
+        referenceType: null,
+        referenceValue: null,
+        destination: null,
+        itemsMoved: [],
+        movementReason: currentWorkflow.movementReason
+      };
+      document.getElementById('actionArea').innerHTML = "";
+      document.getElementById('itemsList').innerHTML = "";
+      document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan Dock Door</div>`;
+    }
+
+    // Render reference choice buttons if no valid source location is found.
+    function renderReferenceChoice() {
+      document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Do you have any reference?</div>`;
+      document.getElementById('actionArea').innerHTML = `
+        <button class="btn btn-secondary m-1" onclick="setReferenceType('PO')">PO</button>
+        <button class="btn btn-secondary m-1" onclick="setReferenceType('Carrier')">Carrier</button>
+        <button class="btn btn-secondary m-1" onclick="setReferenceType('Supplier')">Supplier</button>
+      `;
+    }
+
+    function setReferenceType(refType) {
+      currentWorkflow.referenceType = refType;
+      document.getElementById('actionArea').innerHTML = `
+        <input type="text" id="referenceInput" class="form-control" placeholder="Type ${refType} (e.g., ${refType === 'PO' ? 'PO number' : refType === 'Carrier' ? 'Carrier name' : 'Vendor name'})" />
+        <button class="btn btn-primary mt-2" onclick="submitReferenceInput()">Done</button>
+      `;
+      document.getElementById('scanFeedback').innerHTML = "";
+    }
+
+    function submitReferenceInput() {
+      let refValue = document.getElementById('referenceInput').value.trim();
+      if (refValue === "") {
+        document.getElementById('scanFeedback').innerHTML = "<div style='color:red; font-weight:bold;'>Reference cannot be empty</div>";
+        return;
+      }
+      currentWorkflow.referenceValue = refValue;
+      currentWorkflow.sourceInfo = { referenceType: currentWorkflow.referenceType, referenceValue: refValue };
+      currentWorkflow.step = "awaiting_destination";
+      document.getElementById('actionArea').innerHTML = "";
+      document.getElementById('scanFeedback').innerHTML = `<div class="instructionMessage">Scan destination</div>`;
+    }
+
+    // Utility: Get CSRF token from cookies.
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    // Listen for Enter key events on the scanner input field.
+    document.getElementById('scannerInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        let scannedValue = document.getElementById('scannerInput').value.trim();
+        if (scannedValue !== '') {
+          processScan(scannedValue);
+          document.getElementById('scannerInput').value = '';
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
