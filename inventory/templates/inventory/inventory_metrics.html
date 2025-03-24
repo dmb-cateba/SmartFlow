@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Inventory Metrics</h1>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Inventory Turnover Rate</th>
+                <td>{{ metrics.inventory_turnover_rate }}</td>
+            </tr>
+            <tr>
+                <th>Days of Supply</th>
+                <td>{{ metrics.days_of_supply }}</td>
+            </tr>
+            <tr>
+                <th>Fill Rate</th>
+                <td>{{ metrics.fill_rate }}</td>
+            </tr>
+            <tr>
+                <th>Stockout Rate</th>
+                <td>{{ metrics.stockout_rate }}</td>
+            </tr>
+            <tr>
+                <th>Carrying Cost of Inventory</th>
+                <td>{{ metrics.carrying_cost }}</td>
+            </tr>
+            <tr>
+                <th>Average Inventory Level</th>
+                <td>{{ metrics.average_inventory_level }}</td>
+            </tr>
+            <tr>
+                <th>Order Cycle Time</th>
+                <td>{{ metrics.order_cycle_time }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
