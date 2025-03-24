@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Scanner - SmartStock{% endblock %}
+
+{% block content %}
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="text-center">
+      <h2>Welcome to SmartStock</h2>
+      <div class="mb-3">
+        <input type="text" id="username" class="form-control" placeholder="Username" />
+      </div>
+      <div class="mb-3">
+        <input type="password" id="password" class="form-control" placeholder="Password" />
+      </div>
+      <button class="btn btn-primary" onclick="login()">Login</button>
+      <div id="loginFeedback" class="text-danger mt-2"></div>
+    </div>
+  </div>
+  
+  <!-- Main Menu Screen -->
+  <div id="mainMenu" class="hidden">
+    <div class="row gy-3">
+      {% include "partials/menu_card.html" with action="showSubMenu('Receive')" icon="fas fa-box-open" icon_class="icon-blue" title="01. Receive" %}
+      {% include "partials/menu_card.html" with action="showSubMenu('Prepare Order')" icon="fas fa-clipboard-check" icon_class="icon-green" title="02. Prepare Order" %}
+      {% include "partials/menu_card.html" with action="showSubMenu('Ship')" icon="fas fa-truck" icon_class="icon-red" title="03. Ship" %}
+      {% include "partials/menu_card.html" with action="showSubMenu('Inventory Control')" icon="fas fa-warehouse" icon_class="icon-orange" title="04. Inventory Control" %}
+      {% include "partials/menu_card.html" with action="showSubMenu('Problem Solving')" icon="fas fa-tools" icon_class="icon-purple" title="05. Problem Solving" %}
+      {% include "partials/menu_card.html" with action="showSubMenu('Configurations')" icon="fas fa-cogs" icon_class="icon-teal" title="06. Configurations" %}
+    </div>
+    <div class="home-container">
+      <button class="btn btn-primary" onclick="showMainMenu()">Home</button>
+    </div>
+  </div>
+  
+  <!-- Sub-Menu Screen -->
+  <div id="subMenuScreen" class="hidden">
+    <div id="subMenuHeader" class="header-row header-blue">
+      <h2 id="subMenuTitle" class="m-0"></h2>
+      <span id="loggedInUserSub" class="user-badge badge bg-secondary"></span>
+    </div>
+    <button class="btn btn-secondary mb-3" onclick="goBackSubMenu()">Back</button>
+    <div id="subMenuContent" class="row gy-3"></div>
+    <div class="home-container">
+      <button class="btn btn-primary" onclick="showMainMenu()">Home</button>
+    </div>
+  </div>
+  
+  <!-- Workflow Detail Screen -->
+  <div id="workflowScreen" class="hidden">
+    <div id="workflowHeader" class="header-row header-blue">
+      <h2 id="workflowTitle" class="m-0"></h2>
+      <span id="loggedInUserWorkflow" class="user-badge badge bg-secondary"></span>
+    </div>
+    <button class="btn btn-secondary mb-3" onclick="returnToSubMenu()">Back</button>
+    <div id="workflowContent"></div>
+    <!-- Always-active scanner input -->
+    <input type="text" id="scannerInput" class="form-control mt-3" placeholder="Scan input here..." autofocus />
+    <div id="scanFeedback" class="scan-feedback"></div>
+    <div class="home-container">
+      <button class="btn btn-primary" onclick="showMainMenu()">Home</button>
+    </div>
+  </div>
+{% endblock %}
