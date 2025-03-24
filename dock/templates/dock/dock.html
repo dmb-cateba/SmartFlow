@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% block title %}Dock Management{% endblock title %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">Dock Management Dashboard</h2>
+
+  <!-- Tabs for Inbound and Outbound -->
+  <ul class="nav nav-tabs" id="dockTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="inbound-tab" data-bs-toggle="tab" data-bs-target="#inbound" type="button" role="tab" aria-controls="inbound" aria-selected="true">
+        Inbound
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="outbound-tab" data-bs-toggle="tab" data-bs-target="#outbound" type="button" role="tab" aria-controls="outbound" aria-selected="false">
+        Outbound
+      </button>
+    </li>
+  </ul>
+
+  <!-- Inline CSS for chart sizing, progress bars, and cell wrapping -->
+  <style>
+    /* Chart sizing */
+    .chart-container {
+      max-width: 300px;
+      margin: auto;
+    }
+    .chart-container canvas {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 200px; /* Reduced chart height */
+    }
+    /* Ensure table cell content wraps */
+    table td, table th {
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    /* Custom progress bar styling */
+    .progress {
+      height: 50px; /* Fixed height for progress container */
+    }
+    .progress-bar {
+      height: 80%; /* 80% of the container height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+
+  <div class="tab-content mt-3" id="dockTabsContent">
+    <!-- Inbound Tab Content -->
+    <div class="tab-pane fade show active" id="inbound" role="tabpanel" aria-labelledby="inbound-tab">
+      <h4>Inbound Loads</h4>
+      <!-- Chart above table -->
+      <div class="chart-container mt-4">
+        <h5 class="text-center">Today's Inbound Load Status</h5>
+        <canvas id="inboundChart"></canvas>
+      </div>
+      <div class="table-responsive mt-4">
+        <table class="table table-striped table-bordered">
+          {% if inbound_loads %}
+            {% with header=inbound_loads.0 %}
+              <thead class="table-success">
+                <tr>
+                  <th>Dock Door</th>
+                  {% for key, value in header.items %}
+                    {% if key != "Dock_Door" %}
+                      <th>{{ key }}</th>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              </thead>
+            {% endwith %}
+          {% else %}
+            <thead class="table-success">
+              <tr>
+                <th>No data available</th>
+              </tr>
+            </thead>
+          {% endif %}
+          <tbody>
+            {% for load in inbound_loads %}
+              <tr>
+                <td>{{ load.Dock_Door}}</td>
+                {% for key, value in load.items %}
+                  {% if key != "Dock_Door" %}
+                    <td>
+                      {% if key == "completion" %}
+                        <div class="progress">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: {{ value }}%;" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ value }}%
+                          </div>
+                        </div>
+                      {% else %}
+                        {{ value }}
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="100%" class="text-center">No inbound loads available.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Outbound Tab Content -->
+    <div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="outbound-tab">
+      <h4>Outbound Loads</h4>
+      <!-- Chart above table -->
+      <div class="chart-container mt-4">
+        <h5 class="text-center">Today's Outbound Shipments Completion</h5>
+        <canvas id="outboundChart"></canvas>
+      </div>
+      <div class="table-responsive mt-4">
+        <table class="table table-striped table-bordered">
+          {% if outbound_loads %}
+            {% with header=outbound_loads.0 %}
+              <thead class="table-warning">
+                <tr>
+                  <th>Dock Door</th>
+                  {% for key, value in header.items %}
+                    {% if key != "Dock_Door" %}
+                      <th>{{ key }}</th>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              </thead>
+            {% endwith %}
+          {% else %}
+            <thead class="table-warning">
+              <tr>
+                <th>No data available</th>
+              </tr>
+            </thead>
+          {% endif %}
+          <tbody>
+            {% for load in outbound_loads %}
+              <tr>
+                <td>{{ load.Dock_Door}}</td>
+                {% for key, value in load.items %}
+                  {% if key != "Dock_Door" %}
+                    <td>
+                      {% if key == "completion" %}
+                        <div class="progress">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: {{ value }}%;" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ value }}%
+                          </div>
+                        </div>
+                      {% else %}
+                        {{ value }}
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="100%" class="text-center">No outbound loads available.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<!-- Include Chart.js for interactive charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Inbound Chart (Doughnut Chart Example)
+  const inboundCtx = document.getElementById('inboundChart').getContext('2d');
+  const inboundChart = new Chart(inboundCtx, {
+      type: 'doughnut',
+      data: {
+          labels: ['Completed', 'In-Progress', 'Pending'],
+          datasets: [{
+              data: [60, 25, 15], // Replace with dynamic data if available
+              backgroundColor: ['#28a745', '#ffc107', '#6c757d']
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } }
+      }
+  });
+
+  // Outbound Chart (Bar Chart Example)
+  const outboundCtx = document.getElementById('outboundChart').getContext('2d');
+  const outboundChart = new Chart(outboundCtx, {
+      type: 'bar',
+      data: {
+          labels: ['Shipment 1', 'Shipment 2', 'Shipment 3'], // Replace with dynamic labels if needed
+          datasets: [{
+              label: 'Completion %',
+              data: [80, 50, 95], // Replace with dynamic data if available
+              backgroundColor: '#17a2b8'
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, max: 100 } }
+      }
+  });
+</script>
+{% endblock javascripts %}
