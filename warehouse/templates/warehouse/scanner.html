@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMB InventoryPro Scanner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body { padding: 20px; }
+        .hidden { display: none; }
+        .scan-feedback { font-size: 1.2rem; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="loginScreen">
+    <h2>Welcome to DMB InventoryPro</h2>
+    <div class="mb-3">
+        <input type="text" id="username" class="form-control" placeholder="Username">
+    </div>
+    <div class="mb-3">
+        <input type="password" id="password" class="form-control" placeholder="Password">
+    </div>
+    <button class="btn btn-primary" onclick="login()">Login</button>
+    <div id="loginFeedback" class="text-danger mt-2"></div>
+</div>
+
+<div id="mainMenu" class="hidden">
+    <div class="d-flex justify-content-between">
+        <h3>Main Menu</h3>
+        <span id="loggedInUser"></span>
+    </div>
+    <ul class="list-group mt-3">
+        <li class="list-group-item" onclick="showWorkflow('moveItems')">00. Move Items</li>
+        <li class="list-group-item" onclick="showWorkflow('receiveItems')">01. Receive Items</li>
+        <li class="list-group-item" onclick="showWorkflow('prepareOrders')">02. Prepare Orders</li>
+        <li class="list-group-item" onclick="showWorkflow('shipItems')">03. Ship Items</li>
+        <li class="list-group-item" onclick="showWorkflow('inventoryControl')">04. Inventory Control</li>
+        <li class="list-group-item" onclick="showWorkflow('closeContainer')">05. Close Container</li>
+    </ul>
+</div>
+
+<div id="workflowScreen" class="hidden">
+    <button class="btn btn-secondary mb-3" onclick="returnToMenu()">Back to Menu</button>
+    <div id="workflowContent"></div>
+</div>
+
+<script>
+let currentUser = '';
+
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if(username && password) {
+        currentUser = username;
+        document.getElementById('loggedInUser').innerText = 'User: ' + currentUser;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainMenu').classList.remove('hidden');
+    } else {
+        document.getElementById('loginFeedback').innerText = 'Invalid username or password!';
+    }
+}
+
+function showWorkflow(workflow) {
+    document.getElementById('mainMenu').classList.add('hidden');
+    const workflowContent = document.getElementById('workflowContent');
+    workflowContent.innerHTML = '';
+
+    switch(workflow) {
+        case 'moveItems':
+            workflowContent.innerHTML = `
+                <h4>Move Items</h4>
+                <input id="originScan" class="form-control mb-2" placeholder="Scan Origin">
+                <input id="itemScan" class="form-control mb-2" placeholder="Scan Item">
+                <input id="destinationScan" class="form-control mb-2" placeholder="Scan Destination">
+                <button class="btn btn-success" onclick="performAction('Item moved successfully!')">Submit</button>
+                <div id="moveFeedback" class="scan-feedback"></div>
+            `;
+            break;
+        case 'receiveItems':
+            workflowContent.innerHTML = `
+                <h4>Receive Items</h4>
+                <input id="dockScan" class="form-control mb-2" placeholder="Scan Dock Door">
+                <input id="itemScan" class="form-control mb-2" placeholder="Scan Item">
+                <input id="destScan" class="form-control mb-2" placeholder="Scan Destination">
+                <button class="btn btn-success" onclick="performAction('Item received successfully!')">Submit</button>
+                <div id="receiveFeedback" class="scan-feedback"></div>
+            `;
+            break;
+        case 'closeContainer':
+            workflowContent.innerHTML = `
+                <h4>Close Container</h4>
+                <input id="containerLocationScan" class="form-control mb-2" placeholder="Scan Container Location">
+                <input id="printerScan" class="form-control mb-2" placeholder="Scan Printer">
+                <button class="btn btn-success" onclick="performAction('Container closed and label printed successfully!')">Submit</button>
+                <div id="closeContainerFeedback" class="scan-feedback"></div>
+            `;
+            break;
+        default:
+            workflowContent.innerHTML = `<h4>${workflow} functionality coming soon!</h4>`;
+    }
+
+    document.getElementById('workflowScreen').classList.remove('hidden');
+}
+
+function performAction(message) {
+    const feedbackElements = document.getElementsByClassName('scan-feedback');
+    for(let elem of feedbackElements){
+        elem.innerHTML = `<span class="text-success">${message}</span>`;
+    }
+}
+
+function returnToMenu() {
+    document.getElementById('workflowScreen').classList.add('hidden');
+    document.getElementById('mainMenu').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
