@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Troubleshooting</h1>
+    
+    <!-- Search Form -->
+    <form method="get" class="mb-4">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="search_id">ID Input</label>
+                <input type="text" name="search_id" id="search_id" class="form-control" placeholder="Enter Pallet ID, SKU, or Load ID" value="{{ search_id }}">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="input_type">Input Type</label>
+                <select name="input_type" id="input_type" class="form-control">
+                    <option value="">Select Type</option>
+                    <option value="pallet" {% if input_type == "pallet" %}selected{% endif %}>Pallet ID</option>
+                    <option value="sku" {% if input_type == "sku" %}selected{% endif %}>Item SKU</option>
+                    <option value="load" {% if input_type == "load" %}selected{% endif %}>Load ID</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="start_date">Start Date</label>
+                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ start_date }}">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="end_date">End Date</label>
+                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ end_date }}">
+            </div>
+            <div class="form-group col-md-1 align-self-end">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+    
+    <!-- Movement History Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Transaction Type</th>
+                <th>WHS_ESKU</th>
+                <th>VENDORSKU</th>
+                <th>Container (Pallet ID)</th>
+                <th>Quantity</th>
+                <th>Location Before</th>
+                <th>Location After</th>
+                <th>User</th>
+                <th>Reference Document</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in movement_history %}
+            <tr>
+                <td>{{ transaction.timestamp }}</td>
+                <td>{{ transaction.transaction_type }}</td>
+                <td>{{ transaction.whs_esku }}</td>
+                <td>{{ transaction.vendor_sku }}</td>
+                <td>{{ transaction.container }}</td>
+                <td>{{ transaction.quantity }}</td>
+                <td>{{ transaction.location_before }}</td>
+                <td>{{ transaction.location_after }}</td>
+                <td>{{ transaction.user }}</td>
+                <td>{{ transaction.reference_document }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10">No transaction history available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
