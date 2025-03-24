@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4">Work Plans</h1>
+  
+  <!-- Navigation Tabs for Inbound and Outbound -->
+  <ul class="nav nav-tabs" id="workPlansTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="inbound-tab" data-toggle="tab" href="#inbound" role="tab" aria-controls="inbound" aria-selected="true">Inbound Work Plans</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="outbound-tab" data-toggle="tab" href="#outbound" role="tab" aria-controls="outbound" aria-selected="false">Outbound Work Plans</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="workPlansTabContent">
+    <!-- Inbound Work Plans -->
+    <div class="tab-pane fade show active" id="inbound" role="tabpanel" aria-labelledby="inbound-tab">
+      <h2 class="mt-3">Inbound Work Plans</h2>
+      
+      <!-- Work Completion Summary -->
+      <h4>Work Completion Summary</h4>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Expected Pallets/Units</th>
+            <th>Received Pallets/Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Today</td>
+            <td>{{ work_completion_summary.today.expected }}</td>
+            <td>{{ work_completion_summary.today.received }}</td>
+          </tr>
+          <tr>
+            <td>Tomorrow</td>
+            <td>{{ work_completion_summary.tomorrow.expected }}</td>
+            <td>{{ work_completion_summary.tomorrow.received }}</td>
+          </tr>
+          <tr>
+            <td>Day After</td>
+            <td>{{ work_completion_summary.day_after.expected }}</td>
+            <td>{{ work_completion_summary.day_after.received }}</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Detailed Inbound Work Plans Table -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ETA</th>
+            <th>Truck Number</th>
+            <th>Lane (From)</th>
+            <th>Load Type</th>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Container (Pallet ID)</th>
+            <th>Quantity</th>
+            <th>Expected Reception Date</th>
+            <th>Store By Date</th>
+            <th>Stage By Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for plan in inbound_work_plans %}
+          <tr>
+            <td>{{ plan.eta }}</td>
+            <td>{{ plan.truck_number }}</td>
+            <td>{{ plan.lane }}</td>
+            <td>{{ plan.load_type }}</td>
+            <td>{{ plan.sku }}</td>
+            <td>{{ plan.description }}</td>
+            <td>{{ plan.container }}</td>
+            <td>{{ plan.quantity }}</td>
+            <td>{{ plan.expected_reception_date }}</td>
+            <td>{{ plan.store_by_date }}</td>
+            <td>{{ plan.stage_by_date }}</td>
+            <td>{{ plan.status }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="12">No inbound work plans available.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Outbound Work Plans -->
+    <div class="tab-pane fade" id="outbound" role="tabpanel" aria-labelledby="outbound-tab">
+      <h2 class="mt-3">Outbound Work Plans</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Scheduled Departure</th>
+            <th>Load ID</th>
+            <th>Route (Destination)</th>
+            <th>Load Type</th>
+            <th>SKU</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Current Location/Status</th>
+            <th>Dock Door</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for plan in outbound_work_plans %}
+          <tr>
+            <td>{{ plan.scheduled_departure }}</td>
+            <td>{{ plan.load_id }}</td>
+            <td>{{ plan.route }}</td>
+            <td>{{ plan.load_type }}</td>
+            <td>{{ plan.sku }}</td>
+            <td>{{ plan.description }}</td>
+            <td>{{ plan.quantity }}</td>
+            <td>{{ plan.current_location }}</td>
+            <td>{{ plan.dock_door }}</td>
+            <td>{{ plan.status }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="10">No outbound work plans available.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <!-- Additional visual segmentation or process path cues can be added here -->
+    </div>
+  </div>
+</div>
+{% endblock %}
