@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <h2>Create Location</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Create Location</button>
+  </form>
+{% endblock %}
