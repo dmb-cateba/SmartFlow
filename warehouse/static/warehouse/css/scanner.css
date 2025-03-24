@@ -1,0 +1,122 @@
+/* scanner.css */
+
+/* Global body styles */
+body {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+/* Hide elements with the 'hidden' class */
+.hidden {
+    display: none;
+}
+
+/* Menu card styling */
+.menu-card {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+}
+
+/* Circular icon styling */
+.icon-circle {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    margin-right: 15px;
+}
+
+/* Icon background colors */
+.icon-blue {
+    background-color: #007bff;
+}
+
+.icon-green {
+    background-color: #28a745;
+}
+
+.icon-red {
+    background-color: #dc3545;
+}
+
+.icon-orange {
+    background-color: #fd7e14;
+}
+
+.icon-purple {
+    background-color: #6f42c1;
+}
+
+.icon-teal {
+    background-color: #20c997;
+}
+
+/* Header row styling */
+.header-row {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+/* Header background color variations */
+.header-blue {
+    background-color: #007bff;
+}
+
+.header-green {
+    background-color: #28a745;
+}
+
+.header-red {
+    background-color: #dc3545;
+}
+
+.header-orange {
+    background-color: #fd7e14;
+}
+
+.header-purple {
+    background-color: #6f42c1;
+}
+
+.header-teal {
+    background-color: #20c997;
+}
+
+/* User badge styling */
+.user-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.9rem;
+}
+
+/* Fixed footer styling */
+.fixed-footer {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Home button container */
+.home-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Scanner feedback styling */
+.scan-feedback {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
